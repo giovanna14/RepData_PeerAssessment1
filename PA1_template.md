@@ -8,7 +8,8 @@ output:
 
 ## Loading and preprocessing the data
 
-```{r readdata, echo=TRUE}
+
+```r
 ## unzip the datafile into a temporary directory 
 ## and read it into an R data frame called mydata
 zipdir <- tempfile()
@@ -23,25 +24,37 @@ mydata <- read.csv(myfile)
 
 ## What is mean total number of steps taken per day?
 
-```{r originaldata, echo=TRUE}
+
+```r
 ## total number of steps taken each day
 sum_per_date <- tapply(mydata$steps,mydata$date,sum)
 hist(sum_per_date,breaks="FD",
      main="Total number of daily steps",
      xlab = "Total steps per day")
+```
+
+![plot of chunk originaldata](figure/originaldata-1.png) 
+
+```r
 ## mean and median number of steps per day
 mean_med <- c(summary(sum_per_date)[4],summary(sum_per_date)[3])
 mean_med
 ```
 
-In a period of `r (dim(sum_per_date))` days spread over a year,
+```
+##   Mean Median 
+##  10770  10760
+```
+
+In a period of 61 days spread over a year,
 the mean and median total number of steps taken per day were
-`r format.AsIs(mean_med[1])` and `r format.AsIs(mean_med[2])`, 
+10770 and 10760, 
 respectively.
 
 ## What is the average daily activity pattern?
 
-```{r,echo=TRUE}
+
+```r
 mean_per_int <- aggregate(mydata$steps[!is.na(mydata$steps)],
                           list(interval = mydata$interval[!is.na(mydata$steps)]),
                           mean)
@@ -53,23 +66,39 @@ with(mean_per_int, plot(interval,x,type="l",
      )
 ```
 
+![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png) 
+
 
 ## Imputing missing values
 
-```{r missingvalues, echo=TRUE}
+
+```r
 # number of complete observations in the dataset
 cc <- complete.cases(mydata)
 # number of NAs in the dataset
 n_NA <- sum(!cc)
 n_NA
+```
 
+```
+## [1] 2304
+```
+
+```r
 list_missing_val <- tapply(mydata$steps, mydata$date, is.na)
 missing_val_per_day <- sapply(list_missing_val,sum)
 missing <- missing_val_per_day[missing_val_per_day > 0]
 missing
 ```
-The number of NAs in the dataset is `r n_NA`. These are in 
-`r length(missing)` days during which no valid measurement was taken.  
+
+```
+## 2012-10-01 2012-10-08 2012-11-01 2012-11-04 2012-11-09 2012-11-10 
+##        288        288        288        288        288        288 
+## 2012-11-14 2012-11-30 
+##        288        288
+```
+The number of NAs in the dataset is 2304. These are in 
+8 days during which no valid measurement was taken.  
 We decided to fill in missing values in these days by substituting 
 for each 5 minutes time interval the mean total number of steps taken 
 in that interval. 
@@ -78,14 +107,26 @@ calculating the histogram of total daily steps and the mean and median
 total number of steps taken per day from the modified dataset and
 comparing it with those obtained from the original dataset.
 
-```{r simulatedata, echo=TRUE}
-library(dplyr)
 
+```r
+library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r,echo=TRUE}
-```
+
 
 
