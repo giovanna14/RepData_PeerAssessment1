@@ -68,6 +68,12 @@ with(mean_per_int, plot(interval,x,type="l",
 
 ![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png) 
 
+```r
+max_int <- mean_per_int$interval[mean_per_int$x >= max(mean_per_int$x)]
+```
+
+On average, across all the days in the dataset, the maximum number of steps
+occurs in the time interval at 835 minutes.
 
 ## Imputing missing values
 
@@ -109,20 +115,9 @@ comparing it with those obtained from the original dataset.
 
 
 ```r
-library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-## 
-## The following object is masked from 'package:stats':
-## 
-##     filter
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
+#library(dplyr)
+newdata <- merge(mydata,mean_per_int,sort=FALSE)
+## to be continued...
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?

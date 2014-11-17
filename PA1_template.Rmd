@@ -51,8 +51,11 @@ with(mean_per_int, plot(interval,x,type="l",
                         xlab = "Time interval (minutes)"
                         )
      )
+max_int <- mean_per_int$interval[mean_per_int$x >= max(mean_per_int$x)]
 ```
 
+On average, across all the days in the dataset, the maximum number of steps
+occurs in the time interval at `r max_int` minutes.
 
 ## Imputing missing values
 
@@ -79,8 +82,9 @@ total number of steps taken per day from the modified dataset and
 comparing it with those obtained from the original dataset.
 
 ```{r simulatedata, echo=TRUE}
-library(dplyr)
-
+#library(dplyr)
+newdata <- merge(mydata,mean_per_int,sort=FALSE)
+## to be continued...
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
