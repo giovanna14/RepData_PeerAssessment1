@@ -87,10 +87,15 @@ respectively.
 mean_per_int <- aggregate(mydata$steps[!is.na(mydata$steps)],
                           list(interval = mydata$interval[!is.na(mydata$steps)]),
                           mean)
-with(mean_per_int, plot(interval,x,type="l",
+# convert the interval identifier into hh:mm time
+x <- mean_per_int$interval
+y <- rep(100*(0:23),each=12)
+time <- as.POSIXct(strptime(paste0(y/100,":",(x - y)), "%R")) 
+# use new time variable for plot
+with(mean_per_int, plot(time,x,type="l",
                         main="Average daily activity pattern",
                         ylab = "Mean steps per time interval",
-                        xlab = "Time interval",
+                        xlab = "Time in 5 minutes intervals",
                         col = "purple"
                         )
      )
@@ -217,22 +222,33 @@ mean_per_int_wd <- aggregate(newdata$steps[newdata$weekdays == "weekday"],
                                 newdata$weekdays == "weekday"]),
                           mean)
 names(mean_per_int_wd) <- c("interval","meansteps_per_interval")
+# add a column with time in hh:mm
+mean_per_int_wd$time <- time
 # mean steps per time interval in weekend days
 mean_per_int_we <- aggregate(newdata$steps[newdata$weekdays == "weekend"],
                           list(interval = newdata$interval[
                                 newdata$weekdays == "weekend"]),
                           mean)
 names(mean_per_int_we) <- c("interval","meansteps_per_interval")
+# add a column with time in hh:mm
+mean_per_int_we$time <- time
 # put results in a single dataframe with weekdays factor
 mean_per_int_wd$weekdays <- factor("weekday")
 mean_per_int_we$weekdays <- factor("weekend")
 new_mean_per_int <- rbind(mean_per_int_wd,mean_per_int_we)
 # two-panel plot
 library(lattice)
-xyplot(meansteps_per_interval ~ interval | weekdays, 
+xyplot(meansteps_per_interval ~ time | weekdays, 
        data = new_mean_per_int, layout = c(1,2),
-       xlab="Time interval",ylab="Mean number of steps per time interval",
-       type="l",lty=1,col="purple")
+       xlab="Time in 5 minute intervals",
+       ylab="Mean number of steps per time interval",
+       type="l",lty=1,col="purple",
+       scales=list(x=list(format="%H:%M"),
+                   alternating=c(1,1),
+                   tck=c(1,0),
+                   tick.number=8,
+                   axs="i")
+       )
 ```
 
 ![plot of chunk weekdays_activity](figure/weekdays_activity-1.png) 
